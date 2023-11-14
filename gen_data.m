@@ -1,7 +1,7 @@
 function [weights,x,t,x0,ode_name,ode_params,rhs] = gen_data(ode_num,ode_params,tspan,x0,tol_ode)
 
 % Simulate ODE
-    ode_names = {'Linear','Logistic_Growth','Van_der_Pol','Duffing','Lotka_Volterra','Lorenz','Rossler','rational','Oregonator','Hindmarsh-Rose','Pendulum','custom'};
+    ode_names = {'Linear','Logistic_Growth','Van_der_Pol','Duffing','Lotka_Volterra','Lorenz','Rossler','rational','Oregonator','Hindmarsh-Rose','Pendulum','SIRS','custom'};
     ode_name = ode_names{ode_num};
     if strcmp(ode_name, 'Linear')%1
         % ll-dim
@@ -153,9 +153,19 @@ function [weights,x,t,x0,ode_name,ode_params,rhs] = gen_data(ode_num,ode_params,
             tspan = 0:0.1:50;
         end
         
+    elseif strcmp(ode_name, 'SIRS')%13
+        
+        if isempty(ode_params)
+            ode_params = {0.5, 0.1, 0.1};
+        end
+        if isempty(x0)
+            x0 = [0.99 0.01 0]';
+        end
+        if isempty(tspan)
+            tspan = 0:0.1:100;
+        end
 
-    elseif strcmp(ode_name, 'SIRD')%12
-    elseif strcmp(ode_name, 'custom')%13
+    elseif strcmp(ode_name, 'custom')%14
         % nonlinear Schrodinger
     %     ode_func = @(x) [0.1*x(2).*(x(1).^2+x(2).^2);-x(1).*(x(1).^2+x(2).^2)];
     %     weights = {[[2 1 0.1];[0 3 0.1]], [[3 0 -1];[1 2 -1]]};

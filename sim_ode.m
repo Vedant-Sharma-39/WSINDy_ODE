@@ -32,6 +32,11 @@ elseif strcmp(ode_name,'Lotka_Volterra')
     rhs = @(x) LoVo(x,alpha,beta,delta, gamma);
     weights = {[[1 0 alpha];[1 1 -beta]],[[0 1 -gamma];[1 1 delta]]};
 
+elseif strcmp(ode_name, 'SIRS')
+    beta = params{1}; gamma = params{2}; delta = params{3};
+    rhs = @(x) SIRS(x, beta, gamma, delta);
+    weights = {[[1 1 0 -beta];[0 0 1 delta]], [[0 1 0 -delta]; [1 1 0 beta]], [[0 1 0 delta]; [0 0 1 -delta]]};
+    
 elseif strcmp(ode_name,'Van_der_Pol')
     mu = params{1};
     rhs = @(x) vanderpol(x,mu);
@@ -94,7 +99,13 @@ elseif strcmp(ode_name,'rational')
 elseif strcmp(ode_name,'custom')
     rhs = @(x) params{1}(x);    
     weights = params{2};
+    
+
 end
+
+
+    
+
 
 options = odeset('RelTol',tol_ode,'AbsTol',tol_ode*ones(1,length(x0)));
 if odemethod=='s'
@@ -114,6 +125,14 @@ end
 function dx = LoVo(x,alpha,beta,delta, gamma)
     dx(1) = alpha*x(1)-beta*x(1).*x(2);
     dx(2) = delta*x(1).*x(2)- gamma*x(2);
+    dx = dx';
+end
+
+function dx = SIRS(x, beta, gamma, delta)
+    
+    dx(1) = -beta * x(1) .* x(2) + delta * x(3);
+    dx(2) = - gamma * x(2) +  beta * x(1) .* x(2);
+    dx(3) = gamma * x(2) - delta * x(3);
     dx = dx';
 end
 

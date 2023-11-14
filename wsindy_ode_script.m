@@ -2,14 +2,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % clear all; close all; clc;
 
-ode_num = 6;                        % select ODE from list below
+ode_num = 12;                        % select ODE from list below
 tol_ode = 1e-12;                    % set tolerance (abs and rel) of ode45
 
 % tspan = [0:0.01:30]; ode_params = {0.1, 0.1, 5}; x0 = [0;1]; % example custom ODE system parameters
 tspan = []; ode_params = {}; x0 = []; % ODE system parameters
 ode_names = {'Linear','Logistic_Growth','Van_der_Pol','Duffing',... %1-4
              'Lotka_Volterra','Lorenz','Rossler','rational',...     %5-8
-             'Oregonator','Hindmarsh-Rose','Pendulum','custom'};    %9-12
+             'Oregonator','Hindmarsh-Rose','Pendulum','SIRS','custom'};    %9-13
 [weights,x,t,x0,ode_name,ode_params,rhs] = gen_data(ode_num,ode_params,tspan,x0,tol_ode);
 
 %% load data from file
@@ -41,7 +41,7 @@ rng_seed = rng().Seed; rng(rng_seed);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% library
-polys = [0:5];                        % Monomials. DEFAULT: polys = 0:5; 
+polys = [0:2];                        % Monomials. DEFAULT: polys = 0:5; 
 trigs = [];                         % sine / cosine terms. DEFAULT: trigs = [];
 filter = {};%{@(tags) tags(:,2)==0};
 custom_tags = [];
@@ -53,8 +53,8 @@ phi_class = 1;%@(t)exp(9./(t.^2-1-eps)); % Choose test function class. DEFAULT: 
                                     % ---phi_class = 1: piecewisepoly test functions, 
                                     % ---phi_class = 2: gaussian test functions
                                     % ---phi_class = function_handle: use function handle and symbolically compute derivative
-tau = 10^-16; tauhat = -1;          % Choose test function params. DEFAULT: [tau,tauhat] = [10^-16,-1]. 
-                                    % ---tau > 1: [tau,tauhat] = [m,p] directly
+%tau = 10^-16; tauhat = -1;          % Choose test function params. DEFAULT: [tau,tauhat] = [10^-16,-1]. 
+tau = 30; tauhat = 12;                                    % ---tau > 1: [tau,tauhat] = [m,p] directly
                                     % ---tauhat > 0: tauhat = width-at-half-max. 
                                     % ---tauhat < 0: use corner point (recommended)
 K_frac = 1000;                         % Choose number of test functions K. DEFAULT: K_frac = 1.
@@ -65,7 +65,7 @@ scale_Theta = 2;                    % rescale data. DEFAULT: scale_theta = 2.
                                     % ---scale_Theta < 0: rescale data: xobs -> xobs./(-scale_theta*rms(xobs))
                                     % ---scale_Theta > 0: rescale data: xobs -> xobs/||xobs||_{2p} where p=max(polys)
                                     % ---scale_theta == 0: no rescaling
-lambda = 10.^(linspace(-4,0,100));  % sparsity factor(s). DEFAULT: lambda = 10.^(linspace(-4,0,100)).
+lambda = 10.^(linspace(-5,0,100));  % sparsity factor(s). DEFAULT: lambda = 10.^(linspace(-4,0,100)).
 alpha_loss = 0.8;                   % convex combination btw resid and sprasity in MSTLS loss. DEFAULT: 0.8.
                                     % *(smaller libraries require alpha_loss closer to 1)
 gamma = 0;                          % Tikhonov regularization. DEFAULT: gamma = 0.
